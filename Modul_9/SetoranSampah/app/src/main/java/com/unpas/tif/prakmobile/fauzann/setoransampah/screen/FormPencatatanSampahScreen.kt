@@ -10,10 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,13 +22,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.benasher44.uuid.uuid4
 import com.unpas.tif.prakmobile.fauzann.setoransampah.ui.theme.Purple700
 import com.unpas.tif.prakmobile.fauzann.setoransampah.ui.theme.Teal200
 import kotlinx.coroutines.launch
 
 @Composable
-fun FormPencatatanSampah() {
+fun FormPencatatanSampahScreen(navController :
+                               NavHostController, id: String? = null, modifier: Modifier = Modifier) {
 
     val viewModel = hiltViewModel<PengelolaanSampahViewModel>()
     val scope = rememberCoroutineScope()
@@ -103,7 +102,6 @@ fun FormPencatatanSampah() {
             backgroundColor = Teal200,
             contentColor = Purple700
         )
-
         Row(
             modifier = Modifier
                 .padding(4.dp)
@@ -114,7 +112,7 @@ fun FormPencatatanSampah() {
                     .weight(5f),
                 onClick = {
                     val id = uuid4().toString()
-                    if (tanggal.value.text.isNotEmpty() && nama.value.text.isNotEmpty() && berat.value.text.isNotEmpty()) {
+                    if (id == null) {
                         scope.launch {
                             viewModel.insert(tanggal.value.text, nama.value.text,
                                 berat.value.text)
@@ -122,17 +120,18 @@ fun FormPencatatanSampah() {
                                 "Data berhasil disimpan",
                                 Toast.LENGTH_SHORT
                             ).show()
-
-                            tanggal.value = TextFieldValue("")
-                            nama.value = TextFieldValue("")
-                            berat.value = TextFieldValue("")
                         }
                     } else {
-                        Toast.makeText(context,
-                            "Data tidak boleh kosong",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        scope.launch {
+                            viewModel.update(id, tanggal.value.text,
+                            nama.value.text, berat.value.text)
+                            Toast.makeText(context,
+                                "Data berhasil diperbaharui",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
+                    navController.navigate("pengelolaan-sampah")
                 },
                 colors = loginButtonColors
             ) {
@@ -163,5 +162,19 @@ fun FormPencatatanSampah() {
 
     viewModel.isLoading.observe(LocalLifecycleOwner.current) {
         isLoading.value = it
+    }
+
+    if (id != null) {
+        LaunchedEffect(scope) {
+            viewModel.loadItem(id) { setoranSampah ->
+                setoranSampah?.let {
+                    tanggal.value =
+                        TextFieldValue(setoranSampah.tanggal)
+                    nama.value = TextFieldValue(setoranSampah.nama)
+                    berat.value =
+                        TextFieldValue(setoranSampah.berat)
+                }
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ interface SetoranSampahDao {
     suspend fun getList(): List<SetoranSampah>
 
     @Query("SELECT * FROM SetoranSampah WHERE id = :id")
-    fun find(id: String): SetoranSampah?
+    suspend fun find(id: String): SetoranSampah?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg items: SetoranSampah)
@@ -23,7 +23,6 @@ interface SetoranSampahDao {
 
     @Delete
     fun delete(item: SetoranSampah)
-
     @Query("DELETE FROM SetoranSampah WHERE id = :id")
     fun delete(id: String)
 }

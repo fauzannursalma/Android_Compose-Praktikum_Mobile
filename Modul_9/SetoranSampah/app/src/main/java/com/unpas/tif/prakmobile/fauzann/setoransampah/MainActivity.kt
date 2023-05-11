@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.unpas.tif.prakmobile.fauzann.setoransampah.screen.MainScreen
 import com.unpas.tif.prakmobile.fauzann.setoransampah.screen.PengelolaanSampahScreen
 import com.unpas.tif.prakmobile.fauzann.setoransampah.ui.theme.SetoranSampahTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    PengelolaanSampahScreen()
+                    MainScreen()
                 }
             }
         }
@@ -36,6 +37,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     SetoranSampahTheme {
-        PengelolaanSampahScreen()
+        MainScreen()
     }
 }

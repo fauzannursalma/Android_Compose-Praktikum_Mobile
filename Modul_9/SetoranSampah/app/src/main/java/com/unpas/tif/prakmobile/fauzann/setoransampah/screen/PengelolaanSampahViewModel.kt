@@ -48,4 +48,24 @@ class PengelolaanSampahViewModel @Inject constructor(private val
                 _success.postValue(true)
             })
     }
+
+    suspend fun loadItem(id: String, onSuccess: (SetoranSampah?) ->
+    Unit) {
+        val item = setoranSampahRepository.find(id)
+        onSuccess(item)
+    }
+    suspend fun update(id: String,
+                       tanggal: String,
+                       nama: String,
+                       berat: String){
+        _isLoading.postValue(true)
+        setoranSampahRepository.update(id, tanggal, nama, berat,
+            onError = { item, message ->
+                _toast.postValue(message)
+                _isLoading.postValue(false)
+            }, onSuccess = {
+                _isLoading.postValue(false)
+                _success.postValue(true)
+            })
+    }
 }

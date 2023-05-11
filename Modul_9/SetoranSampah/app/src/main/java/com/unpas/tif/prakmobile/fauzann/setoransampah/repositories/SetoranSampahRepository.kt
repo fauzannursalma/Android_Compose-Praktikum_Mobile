@@ -120,4 +120,8 @@ class SetoranSampahRepository @Inject constructor(
             onError(message())
         }
     }
+
+    suspend fun find(id: String) : SetoranSampah? {
+        return dao.find(id)
+    }
 }
